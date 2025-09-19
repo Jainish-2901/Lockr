@@ -33,7 +33,7 @@ export default function Login() {
     setForgotLoading(true);
     setForgotMsg("");
     try {
-      await axios.post("https://lockr-backend.onrender.com/api/auth/forgot-password", { email: forgotEmail });
+      await axios.post("https://lockr-sigma.vercel.app/api/auth/forgot-password", { email: forgotEmail });
       setForgotMsg("If this email exists, a reset link has been sent.");
     } catch (err) {
       setForgotMsg("Failed to send reset link.");
