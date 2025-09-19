@@ -11,7 +11,7 @@ connectDB();
 
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: '*', credentials: true }));
+app.use(cors({ origin: 'https://lockr-safe.vercel.app', credentials: true }));
 
 // Routes
 app.use("/api/auth", require("./routes/auth"));   // All auth routes (register, login, forgot-password)
