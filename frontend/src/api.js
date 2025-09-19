@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = axios.create({ baseURL: process.env.VITE_API_URL });
+const API = axios.create({ baseURL: import.meta.env.VITE_API_URL });
 
 // Add JWT token to requests if logged in
 API.interceptors.request.use((req) => {
