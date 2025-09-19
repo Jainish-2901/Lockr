@@ -33,7 +33,7 @@ export default function Login() {
     setForgotLoading(true);
     setForgotMsg("");
     try {
-      await axios.post("/api/auth/forgot-password", { email: forgotEmail });
+      await axios.post(`${process.env.VITE_API_URL}/api/auth/forgot-password`, { email: forgotEmail });
       setForgotMsg("If this email exists, a reset link has been sent.");
     } catch (err) {
       setForgotMsg("Failed to send reset link.");
