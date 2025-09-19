@@ -31,7 +31,7 @@ export default function Navbar() {
           <span className="hidden sm:inline font-medium">Home</span>
         </Link>
         <a
-          href="https://github.com/Abdus-8747/Lockr"
+          href="https://github.com/Jainish-2901/Lockr"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-1 text-gray-500 hover:text-black transition"

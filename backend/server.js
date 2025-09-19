@@ -13,16 +13,17 @@ const app = express();
 app.use(express.json());
 app.use(cors({ origin: '*', credentials: true }));
 
-
-
 // Routes
-app.use("/api/auth", require("./routes/auth"));
-app.use("/api/vault", require("./routes/vault"));
+app.use("/api/auth", require("./routes/auth"));   // All auth routes (register, login, forgot-password)
+app.use("/api/vault", require("./routes/vault")); // Vault routes
+
+// Remove this line to avoid duplicate route mounting and 404 issues:
+// app.use("/api", require("./routes/auth"));
+
 app.use((err, req, res, next) => {
   console.error("🔥 GLOBAL ERROR:", err.stack || err);
   res.status(500).json({ msg: "Something broke on the server" });
 });
-
 
 // Default route
 app.get("/", (req, res) => res.send("Lockr API running..."));

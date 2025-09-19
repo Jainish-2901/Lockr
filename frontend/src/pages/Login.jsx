@@ -1,12 +1,17 @@
 import { useState } from "react";
 import { login } from "../api";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
 export default function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showForgot, setShowForgot] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotMsg, setForgotMsg] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -20,6 +25,20 @@ export default function Login() {
     } catch (err) {
       setError(err.response?.data?.msg || "Login failed");
     }
+  };
+
+  // Real forgot password handler
+  const handleForgotSubmit = async (e) => {
+    e.preventDefault();
+    setForgotLoading(true);
+    setForgotMsg("");
+    try {
+      await axios.post("/api/auth/forgot-password", { email: forgotEmail });
+      setForgotMsg("If this email exists, a reset link has been sent.");
+    } catch (err) {
+      setForgotMsg("Failed to send reset link.");
+    }
+    setForgotLoading(false);
   };
 
   return (
@@ -89,6 +108,17 @@ export default function Login() {
           </button>
         </div>
 
+        {/* Forgot Password Link */}
+        <div className="flex justify-end">
+          <button
+            type="button"
+            className="text-sky-500 text-sm hover:underline focus:outline-none"
+            onClick={() => setShowForgot(true)}
+          >
+            Forgot password?
+          </button>
+        </div>
+
         {/* Login Button */}
         <button
           className="w-full py-3 rounded-xl font-semibold text-white 
@@ -110,6 +140,50 @@ export default function Login() {
           </Link>
         </p>
       </form>
+
+      {/* Forgot Password Modal */}
+      {showForgot && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white p-6 rounded-xl shadow-lg w-80">
+            <h2 className="text-lg font-semibold text-gray-800 mb-2">
+              Forgot Password
+            </h2>
+            <form onSubmit={handleForgotSubmit} className="space-y-3">
+              <input
+                type="email"
+                value={forgotEmail}
+                onChange={(e) => setForgotEmail(e.target.value)}
+                placeholder="Enter your email"
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-sky-400"
+              />
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 text-gray-800"
+                  onClick={() => {
+                    setShowForgot(false);
+                    setForgotMsg("");
+                    setForgotEmail("");
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-3 py-1 rounded bg-sky-500 hover:bg-sky-600 text-white"
+                  disabled={forgotLoading}
+                >
+                  {forgotLoading ? "Sending..." : "Send Link"}
+                </button>
+              </div>
+              {forgotMsg && (
+                <p className="text-sm text-center text-green-600 mt-2">{forgotMsg}</p>
+              )}
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
