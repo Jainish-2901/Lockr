@@ -80,8 +80,8 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               { name: "Jainish Dabgar", text: "Lockr makes password management effortless. Super clean UI!" },
-              { name: "Pratik", text: "I finally feel secure with my credentials. Highly recommend it." },
-              { name: "Kruparth", text: "The best password manager I've used. Simple yet powerful." },
+              { name: "Pratik Jivrajani", text: "I finally feel secure with my credentials. Highly recommend it." },
+              { name: "Kruparthsinh Kher", text: "The best password manager I've used. Simple yet powerful." },
               { name: "Nehal Sheth", text: "Easy to use and very reliable. Love the design!" },
               { name: "Om Patel", text: "Lockr saved me so much time. Perfect for daily use." },
             ].map((review, idx) => (

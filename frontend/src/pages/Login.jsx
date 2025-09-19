@@ -1,50 +1,87 @@
-const express = require("express");
-const router = express.Router();
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+import { useState } from "react";
+import { login } from "../api";
+import { useNavigate, Link } from "react-router-dom";
 
-// Register
-router.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
-  try {
-    let user = await User.findOne({ email });
-    if (user) return res.status(400).json({ msg: "User already exists" });
+export default function Login() {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
 
-    user = new User({ name, email, password });
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
-    await user.save();
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
-    const payload = { user: { id: user.id } };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "7d" });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await login(form);
+      localStorage.setItem("token", res.data.token);
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.response?.data?.msg || "Login failed");
+    }
+  };
 
-    res.json({ token });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-50 via-white to-indigo-50">
+      <form
+        onSubmit={handleSubmit}
+        className="backdrop-blur-xl bg-white/70 border border-gray-100 
+                   shadow-xl rounded-2xl p-8 w-96 space-y-5"
+      >
+        {/* Title */}
+        <h1 className="text-3xl font-extrabold text-center bg-gradient-to-r from-sky-500 to-indigo-500 bg-clip-text text-transparent">
+          Welcome Back
+        </h1>
+        <p className="text-center text-gray-500 text-sm">Login to your account</p>
 
-// Login
-router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ msg: "Invalid Credentials" });
+        {/* Error Message */}
+        {error && (
+          <p className="text-red-500 text-sm bg-red-50 border border-red-200 rounded-lg p-2 text-center">
+            {error}
+          </p>
+        )}
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ msg: "Invalid Credentials" });
+        {/* Inputs */}
+        <input
+          name="email"
+          type="email"
+          value={form.email}
+          onChange={handleChange}
+          placeholder="Email"
+          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none 
+                     focus:ring-2 focus:ring-sky-400 transition"
+        />
+        <input
+          name="password"
+          type="password"
+          value={form.password}
+          onChange={handleChange}
+          placeholder="Password"
+          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none 
+                     focus:ring-2 focus:ring-sky-400 transition"
+        />
 
-    const payload = { user: { id: user.id } };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "7d" });
+        {/* Login Button */}
+        <button
+          className="w-full py-3 rounded-xl font-semibold text-white 
+                     bg-gradient-to-r from-sky-500 to-indigo-500 
+                     shadow-md hover:shadow-lg hover:scale-[1.02] 
+                     transition duration-300"
+        >
+          Login
+        </button>
 
-    res.json({ token });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
-
-
-module.exports = router;
+        {/* Footer */}
+        <p className="text-sm text-center text-gray-600">
+          New here?{" "}
+          <Link
+            to="/signup"
+            className="text-sky-500 font-medium hover:underline transition"
+          >
+            Sign Up
+          </Link>
+        </p>
+      </form>
+    </div>
+  );
+}
