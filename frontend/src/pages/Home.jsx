@@ -15,7 +15,7 @@ export default function Home() {
             className="text-5xl md:text-6xl font-extrabold tracking-tight 
                        bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
           >
-            Lockr — Your Personal Password Vault
+            Lockr — Your Secure Online Vault
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
