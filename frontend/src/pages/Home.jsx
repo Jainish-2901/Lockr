@@ -37,7 +37,7 @@ export default function Home() {
               className="px-6 py-3 rounded-xl text-white bg-gradient-to-r from-indigo-600 to-purple-600 
                          shadow-md hover:shadow-lg hover:scale-105 transition"
             >
-              Get Started
+              Signup for free
             </Link>
             <Link
               to="/login"
